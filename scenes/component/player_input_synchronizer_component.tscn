@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4o8r25nhrp33"]
+
+[ext_resource type="Script" uid="uid://cndtw5lahvsut" path="res://scripts/component/PlayerInputSynchronizerComponent.cs" id="1_twd0k"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8afob"]
+properties/0/path = NodePath(".:movementVector")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="PlayerInputSynchronizerComponent" type="MultiplayerSynchronizer"]
+root_path = NodePath(".")
+replication_config = SubResource("SceneReplicationConfig_8afob")
+script = ExtResource("1_twd0k")
