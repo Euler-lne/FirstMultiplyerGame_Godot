@@ -9,4 +9,5 @@ multiplayerSpawner = NodePath("MultiplayerSpawner")
 playerScene = ExtResource("1_o5qli")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://drwx67lwrwrjw")
 spawn_path = NodePath("..")

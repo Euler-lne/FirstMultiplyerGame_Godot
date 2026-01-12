@@ -14,6 +14,7 @@ offset_right = 1.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+rotation = -0.00451851
 script = ExtResource("1_sl1te")
 hostButton = NodePath("HBoxContainer/HostButton")
 joinButton = NodePath("HBoxContainer/JoinButton")

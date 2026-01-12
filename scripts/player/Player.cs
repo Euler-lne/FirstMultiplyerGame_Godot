@@ -5,6 +5,9 @@ public partial class Player : CharacterBody2D
 {
 	[Export] private PlayerInputSynchronizerComponent synchronizer;
 	[Export] private Node2D weaponRoot;
+	[Export] private PackedScene bullet;
+	[Export] private Node2D bulletSpawnPos;
+	[Export] private Timer fireTimer;
 	public const float Speed = 100.0f;
 
 	// private Vector2 startDrawPosition = Vector2.Zero;
@@ -34,11 +37,24 @@ public partial class Player : CharacterBody2D
 		{
 			Velocity = synchronizer.GetMovementVector() * Speed;
 			MoveAndSlide();
+			if (synchronizer.IsAttacking())
+				SpawnBullet();
 		}
 
 		// startDrawPosition = weaponRoot.GlobalPosition;
 		// endDrawPosition = GetGlobalMousePosition();
 		// aimVector = startDrawPosition.DirectionTo(endDrawPosition);
 		// QueueRedraw();
+	}
+
+	private void SpawnBullet()
+	{
+		if (!fireTimer.IsStopped())
+			return;
+		Bullet newBullet = bullet.Instantiate<Bullet>();
+		newBullet.InitBullet(bulletSpawnPos.GlobalPosition, synchronizer.GetAimVector());
+		// 由于子弹的各种参数都是Never同步的，所以设置位置的代码必须要在子弹加载到树上之前执行
+		GetParent().AddChild(newBullet, true);// 保证每个子弹都有一个名字，不然同步不了
+		fireTimer.Start();
 	}
 }
