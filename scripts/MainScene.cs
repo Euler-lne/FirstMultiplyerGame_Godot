@@ -6,6 +6,8 @@ public partial class MainScene : Node2D
 {
     [Export] private MultiplayerSpawner multiplayerSpawner;
     [Export] private PackedScene playerScene;
+    [Export] private Node2D playerSpawnPoint;
+    private PackedScene enemyScene = GD.Load<PackedScene>("uid://f1cwr217egyb");
     public override void _Ready()
     {
         /**
@@ -25,11 +27,13 @@ public partial class MainScene : Node2D
         // PeerReady();
 
         // 解决方案：使用 Callable.From 执行 multiplayerSpawner.Spawn 时调用
+        playerSpawnPoint = GetNode<Node2D>("PlayerSpawnPoint");
         multiplayerSpawner.SpawnFunction = Callable.From((Variant variantData) =>
         {
             var godotDict = variantData.AsGodotDictionary();
             var player = playerScene.Instantiate<Player>();
             player.Name = godotDict["peerId"].ToString();
+            player.GlobalPosition = playerSpawnPoint.GlobalPosition;
             return player;
         });
 

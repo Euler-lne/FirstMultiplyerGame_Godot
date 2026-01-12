@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://drwx67lwrwrjw"]
+[gd_scene load_steps=5 format=3 uid="uid://drwx67lwrwrjw"]
 
 [ext_resource type="Texture2D" uid="uid://lhuskjrcueyp" path="res://assets/player/bullet.png" id="1_2as5g"]
 [ext_resource type="Script" uid="uid://chm557kc5w7ey" path="res://scripts/player/Bullet.cs" id="1_j5eos"]
@@ -14,12 +14,23 @@ properties/2/path = NodePath(".:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j5eos"]
+size = Vector2(13, 8)
+
 [node name="Bullet" type="Node2D" node_paths=PackedStringArray("lifeTimer")]
 script = ExtResource("1_j5eos")
 lifeTimer = NodePath("LifeTimer")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_j5eos")
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(6.5, 0)
+collision_layer = 256
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_j5eos")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(6.5, 0)

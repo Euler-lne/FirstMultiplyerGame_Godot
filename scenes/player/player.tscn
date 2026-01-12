@@ -13,7 +13,7 @@ properties/0/replication_mode = 1
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x7p2l"]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("synchronizer", "weaponRoot", "bulletSpawnPos", "fireTimer")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("synchronizer", "weaponRoot", "bulletSpawnPos", "fireTimer") groups=["player"]]
 collision_layer = 0
 script = ExtResource("1_8afob")
 synchronizer = NodePath("PlayerInputSynchronizerComponent")
@@ -23,7 +23,7 @@ bulletSpawnPos = NodePath("WeaponRoot/BulletSpawnPos")
 fireTimer = NodePath("FireTimer")
 
 [node name="PlayerInputSynchronizerComponent" parent="." node_paths=PackedStringArray("aimRoot") instance=ExtResource("2_dovo2")]
-aimRoot = NodePath("../WeaponRoot/BulletSpawnPos")
+aimRoot = NodePath("../WeaponRoot")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dovo2")

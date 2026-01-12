@@ -25,13 +25,20 @@ public partial class Player : CharacterBody2D
 	{
 		// GD.Print("Player " + Name + " ready. My ID is " + Multiplayer.GetUniqueId() + ". Am I Authority " + IsMultiplayerAuthority());
 		// SetProcess(IsMultiplayerAuthority());  // 只有拥有 Multiplayer Authority 的节点才会执行 _Process 方法,也就是只有服务器才会执行
-		synchronizer.SetMultiplayerAuthority(int.Parse(Name));
+		bool isDigital = int.TryParse(Name, out _);
+		if (isDigital)
+			synchronizer.SetMultiplayerAuthority(int.Parse(Name));
+		else
+		{
+			GD.PrintErr("Player name is not digital, cannot set Multiplayer Authority!");
+		}
 	}
 
 
 	public override void _Process(double delta)
 	{
-		weaponRoot.Rotation = synchronizer.GetAimVector().Angle();
+		if (synchronizer.GetAimVector() != Vector2.Zero)
+			weaponRoot.Rotation = synchronizer.GetAimVector().Angle();
 		// 只有在服务器上执行移动，武器的朝向在各自的客户端上执行
 		if (IsMultiplayerAuthority())
 		{

@@ -3,7 +3,7 @@ using System;
 
 public partial class PlayerInputSynchronizerComponent : MultiplayerSynchronizer
 {
-	[Export] private Node2D aimRoot;
+	[Export] private Node2D aimRoot;  // 这个值不能设置为枪口，要设置为旋转的圆心，不然鼠标点到圆心与枪口之间会一直旋转
 	private Vector2 movementVector = Vector2.Zero; // [Export] 是为了在Godot中选中这个变量进行同步，不写可以直接写变量名
 	private Vector2 aimVector = Vector2.Right;
 

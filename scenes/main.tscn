@@ -1,13 +1,87 @@
-[gd_scene load_steps=3 format=3 uid="uid://rcu3fvu7d45t"]
+[gd_scene load_steps=7 format=3 uid="uid://rcu3fvu7d45t"]
 
 [ext_resource type="Script" uid="uid://c14eprx5f88eq" path="res://scripts/MainScene.cs" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://bls5v3gec4m0o" path="res://scenes/player/player.tscn" id="1_o5qli"]
+[ext_resource type="Texture2D" uid="uid://c0obs8enl4oqn" path="res://assets/environment/arena.png" id="3_sugp2"]
+[ext_resource type="PackedScene" uid="uid://38frv67qkmxr" path="res://scenes/enemy/enemy_manager.tscn" id="4_jyhfs"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sugp2"]
+size = Vector2(32, 320)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jyhfs"]
+size = Vector2(470, 32)
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("multiplayerSpawner")]
 script = ExtResource("1_0wfyh")
 multiplayerSpawner = NodePath("MultiplayerSpawner")
 playerScene = ExtResource("1_o5qli")
 
+[node name="EnemyManager" parent="." node_paths=PackedStringArray("spawnRect") instance=ExtResource("4_jyhfs")]
+spawnRect = NodePath("../ReferenceRect")
+
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://drwx67lwrwrjw")
+_spawnable_scenes = PackedStringArray("uid://drwx67lwrwrjw", "uid://f1cwr217egyb")
 spawn_path = NodePath("..")
+
+[node name="Arena" type="Sprite2D" parent="."]
+position = Vector2(320, 160)
+texture = ExtResource("3_sugp2")
+metadata/_edit_lock_ = true
+
+[node name="Bounds" type="Node" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Bounds"]
+visible = false
+position = Vector2(79, 153)
+collision_mask = 0
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/StaticBody2D"]
+shape = SubResource("RectangleShape2D_sugp2")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Bounds"]
+visible = false
+position = Vector2(561, 153)
+collision_mask = 0
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/StaticBody2D2"]
+shape = SubResource("RectangleShape2D_sugp2")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Bounds"]
+visible = false
+position = Vector2(321, 14)
+collision_mask = 0
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/StaticBody2D3"]
+shape = SubResource("RectangleShape2D_jyhfs")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="Bounds"]
+visible = false
+position = Vector2(321, 296)
+collision_mask = 0
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/StaticBody2D4"]
+shape = SubResource("RectangleShape2D_jyhfs")
+
+[node name="ReferenceRect" type="ReferenceRect" parent="."]
+custom_minimum_size = Vector2(420, 221)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 110.0
+offset_top = 46.0
+offset_right = 530.0
+offset_bottom = 267.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_width = 2.0
+
+[node name="PlayerSpawnPoint" type="Node2D" parent="."]
+position = Vector2(320, 160)
+metadata/_edit_lock_ = true
