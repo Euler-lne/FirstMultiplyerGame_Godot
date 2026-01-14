@@ -9,4 +9,7 @@ enemyScene = ExtResource("2_utm2b")
 
 [node name="SpawnInternalTimer" type="Timer" parent="."]
 wait_time = 2.0
-autostart = true
+one_shot = true
+
+[node name="RoundTimer" type="Timer" parent="."]
+one_shot = true

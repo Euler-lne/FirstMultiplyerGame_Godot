@@ -10,7 +10,7 @@ public partial class MainScene : Node2D
     private PackedScene enemyScene = GD.Load<PackedScene>("uid://f1cwr217egyb");
     public override void _Ready()
     {
-        /**
+        /** 
         这段代码的作用：通知服务器"我准备好了"  
         具体流程：
             1. 每个玩家进入主场景时
