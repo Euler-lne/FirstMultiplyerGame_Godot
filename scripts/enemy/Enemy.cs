@@ -4,27 +4,23 @@ using System;
 public partial class Enemy : CharacterBody2D
 {
 	[Export] private Area2D area2D;
-	private int maxHealth = 5;
-	private int currentHealth;
 	private float speed = 50f;
 
 	private Vector2 targetPosision;
 	private Timer targetAcquisitionTimer;
+	private HealthComponent healthComponent;
 
 	public override void _Ready()
 	{
 		targetAcquisitionTimer = GetNode<Timer>("TargetAcquisitionTimer");
+		healthComponent = GetNode<HealthComponent>("HealthComponent");
 		targetAcquisitionTimer.Timeout += OnTargetAcquisitionTimerTimeout;
 		area2D.AreaEntered += OnAreaEntered;
-		currentHealth = maxHealth;
 		if (IsMultiplayerAuthority())
+		{
 			SetTargetAcquisition();
-	}
-	public override void _ExitTree()
-	{
-		area2D.AreaEntered -= OnAreaEntered;
-		targetAcquisitionTimer.Timeout -= OnTargetAcquisitionTimerTimeout;
-
+			healthComponent.OnDeath += OnDieEvent;
+		}
 	}
 
 	public override void _Process(double delta)
@@ -34,7 +30,21 @@ public partial class Enemy : CharacterBody2D
 		MoveAndSlide();
 	}
 
+	public override void _ExitTree()
+	{
+		area2D.AreaEntered -= OnAreaEntered;
+		targetAcquisitionTimer.Timeout -= OnTargetAcquisitionTimerTimeout;
+		if (IsMultiplayerAuthority())
+		{
+			healthComponent.OnDeath -= OnDieEvent;
+		}
 
+	}
+
+	private void OnDieEvent()
+	{
+		QueueFree();
+	}
 	private void OnTargetAcquisitionTimerTimeout()
 	{
 		if (IsMultiplayerAuthority())
@@ -70,17 +80,7 @@ public partial class Enemy : CharacterBody2D
 		if (area.Owner is Bullet bullet)
 		{
 			bullet.QueueFree();
-			TakeDamage(1);
-		}
-	}
-
-
-	private void TakeDamage(int damage)
-	{
-		currentHealth -= damage;
-		if (currentHealth <= 0)
-		{
-			QueueFree();
+			healthComponent.TakeDamge(1);
 		}
 	}
 
