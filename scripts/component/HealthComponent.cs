@@ -6,6 +6,7 @@ public partial class HealthComponent : Node
 	private int currentHealth;
 	public event Action OnDeath;
 
+
 	public int CurrentHealth
 	{
 		get { return currentHealth; }
@@ -18,6 +19,10 @@ public partial class HealthComponent : Node
 				OnDeath?.Invoke();
 			}
 		}
+	}
+	public override void _Ready()
+	{
+		currentHealth = maxHealth;
 	}
 	public void TakeDamge(int value)
 	{
