@@ -1,5 +1,7 @@
+using Euler.EventBus;
 using Godot;
 using System;
+using System.Reflection.Emit;
 
 public partial class EnemyManager : Node
 {
@@ -12,6 +14,7 @@ public partial class EnemyManager : Node
 	private Timer spawnInternalTimer;
 	private Timer roundTimer;
 	private int roundCount = 0;
+	private int enemyCount = 0;
 
 	public override void _Ready()
 	{
@@ -19,6 +22,7 @@ public partial class EnemyManager : Node
 		roundTimer = GetNode<Timer>("RoundTimer");
 		spawnInternalTimer.Timeout += OnSpawnInternalTimeout;
 		roundTimer.Timeout += OnRoundTimerTimeout;
+		EventBus.EnemyDieEvent += OnEnemyDieEvent;
 		spawnInternalTimer.Start();
 		BeginRound();
 	}
@@ -27,12 +31,24 @@ public partial class EnemyManager : Node
 	{
 		spawnInternalTimer.Timeout -= OnSpawnInternalTimeout;
 		roundTimer.Timeout -= OnRoundTimerTimeout;
+		EventBus.EnemyDieEvent -= OnEnemyDieEvent;
+
+	}
+
+	private void OnEnemyDieEvent()
+	{
+		enemyCount--;
+		CheckRoundComplete();
+		// 回合结束的条件是两个：敌人全部被消灭 且 回合计时器结束
 	}
 
 	private void OnRoundTimerTimeout()
 	{
 		if (IsMultiplayerAuthority())
+		{
 			spawnInternalTimer.Stop();
+			CheckRoundComplete();   // 计时器结束需要检测
+		}
 	}
 
 	private void OnSpawnInternalTimeout()
@@ -53,6 +69,17 @@ public partial class EnemyManager : Node
 		// 减少生成时间相当于增加了每一波敌人的生成数量
 		spawnInternalTimer.WaitTime = BASE_ENEMY_SPAWN_TIME + (roundCount - 1) * ENEMY_SPAWN_TIME_GROWTH;
 		spawnInternalTimer.Start();
+		GD.Print("Round Begin");
+	}
+
+	private void CheckRoundComplete()
+	{
+		if (!roundTimer.IsStopped())
+			return;
+		if (enemyCount != 0)
+			return;
+		GD.Print("Round Complete");
+		BeginRound();
 	}
 
 	private void SpawnEnemy()
@@ -60,6 +87,7 @@ public partial class EnemyManager : Node
 		Enemy enemy = enemyScene.Instantiate<Enemy>();
 		enemy.GlobalPosition = GetRandomPosition();
 		GetParent().AddChild(enemy, true);  // 只能在Parent中进行初始化，应为联机孵化器设置的路径是Parent的路径
+		enemyCount++;
 	}
 
 	private Vector2 GetRandomPosition()

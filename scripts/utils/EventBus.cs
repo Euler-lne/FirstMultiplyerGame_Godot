@@ -3,7 +3,14 @@ using Godot;
 
 namespace Euler.EventBus
 {
-
+    public class EventBus
+    {
+        public static Action EnemyDieEvent;
+        public static void CallEnemyDieEvent()
+        {
+            EnemyDieEvent?.Invoke();
+        }
+    }
 
     // public class HealthEvent
     // {

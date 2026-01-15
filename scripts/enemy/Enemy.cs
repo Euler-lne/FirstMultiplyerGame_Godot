@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Euler.EventBus;
 
 public partial class Enemy : CharacterBody2D
 {
@@ -44,6 +45,7 @@ public partial class Enemy : CharacterBody2D
 	private void OnDieEvent()
 	{
 		QueueFree();
+		EventBus.CallEnemyDieEvent();
 	}
 	private void OnTargetAcquisitionTimerTimeout()
 	{
