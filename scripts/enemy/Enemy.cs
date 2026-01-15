@@ -4,7 +4,6 @@ using Euler.EventBus;
 
 public partial class Enemy : CharacterBody2D
 {
-	[Export] private Area2D area2D;
 	private float speed = 50f;
 
 	private Vector2 targetPosision;
@@ -16,7 +15,6 @@ public partial class Enemy : CharacterBody2D
 		targetAcquisitionTimer = GetNode<Timer>("TargetAcquisitionTimer");
 		healthComponent = GetNode<HealthComponent>("HealthComponent");
 		targetAcquisitionTimer.Timeout += OnTargetAcquisitionTimerTimeout;
-		area2D.AreaEntered += OnAreaEntered;
 		if (IsMultiplayerAuthority())
 		{
 			SetTargetAcquisition();
@@ -33,7 +31,6 @@ public partial class Enemy : CharacterBody2D
 
 	public override void _ExitTree()
 	{
-		area2D.AreaEntered -= OnAreaEntered;
 		targetAcquisitionTimer.Timeout -= OnTargetAcquisitionTimerTimeout;
 		if (IsMultiplayerAuthority())
 		{
@@ -75,15 +72,4 @@ public partial class Enemy : CharacterBody2D
 		else
 			GD.PrintErr("没有找到任何玩家");
 	}
-
-	private void OnAreaEntered(Area2D area)
-	{
-		if (!IsMultiplayerAuthority()) return;
-		if (area.Owner is Bullet bullet)
-		{
-			bullet.QueueFree();
-			healthComponent.TakeDamge(1);
-		}
-	}
-
 }

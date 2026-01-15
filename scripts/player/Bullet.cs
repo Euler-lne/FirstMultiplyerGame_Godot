@@ -6,9 +6,26 @@ public partial class Bullet : Node2D
 	private Vector2 direction = Vector2.Left;
 	private float speed = 600.0f;
 	[Export] private Timer lifeTimer;
+	[Export] private HitComponent hitComponent;
 	public override void _Ready()
 	{
 		lifeTimer.Timeout += OnLifeTimerTimeout;
+		hitComponent.HitEvent += OnHitEvent;
+	}
+	public override void _Process(double delta)
+	{
+		GlobalPosition += direction * speed * (float)delta;
+	}
+
+	public override void _ExitTree()
+	{
+		lifeTimer.Timeout -= OnLifeTimerTimeout;
+		hitComponent.HitEvent -= OnHitEvent;
+	}
+
+	private void OnHitEvent(HurtComponent component)
+	{
+		QueueFree();
 	}
 
 	private void OnLifeTimerTimeout()
@@ -17,9 +34,9 @@ public partial class Bullet : Node2D
 			QueueFree();
 	}
 
-	public override void _Process(double delta)
+	private void RegisterCollision()
 	{
-		GlobalPosition += direction * speed * (float)delta;
+		QueueFree();
 	}
 
 	public void InitBullet(Vector2 pos, Vector2 dir)
