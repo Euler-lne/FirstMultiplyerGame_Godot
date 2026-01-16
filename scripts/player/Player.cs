@@ -8,6 +8,7 @@ public partial class Player : CharacterBody2D
 	[Export] private PackedScene bullet;
 	[Export] private Node2D bulletSpawnPos;
 	[Export] private Timer fireTimer;
+	[Export] private Node2D viewNode;
 	public const float Speed = 100.0f;
 
 	// private Vector2 startDrawPosition = Vector2.Zero;
@@ -37,8 +38,7 @@ public partial class Player : CharacterBody2D
 
 	public override void _Process(double delta)
 	{
-		if (synchronizer.GetAimVector() != Vector2.Zero)
-			weaponRoot.Rotation = synchronizer.GetAimVector().Angle();
+		UpdateWeaponRotation();
 		// 只有在服务器上执行移动，武器的朝向在各自的客户端上执行
 		if (IsMultiplayerAuthority())
 		{
@@ -52,6 +52,16 @@ public partial class Player : CharacterBody2D
 		// endDrawPosition = GetGlobalMousePosition();
 		// aimVector = startDrawPosition.DirectionTo(endDrawPosition);
 		// QueueRedraw();
+	}
+
+	private void UpdateWeaponRotation()
+	{
+		if (synchronizer.GetAimVector() != Vector2.Zero)
+		{
+			viewNode.Scale = synchronizer.GetAimVector().X >= 0 ? Vector2.One : new(-1, 1);
+			Vector2 aimPosition = synchronizer.GetAimVector() + weaponRoot.GlobalPosition;
+			weaponRoot.LookAt(aimPosition);
+		}
 	}
 
 	private void SpawnBullet()
